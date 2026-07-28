@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Iniciar sesión{% endblock %}
+{% block body %}
+<div class="login-page">
+  <section class="login-card">
+    <div class="brand-mark">MLA</div>
+    <h1>Control de Apartados</h1>
+    <p class="muted">Muebles Los Ángeles Cartago</p>
+    <form method="post">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <label>Usuario<input name="username" autocomplete="username" required autofocus></label>
+      <label>Contraseña<input name="password" type="password" autocomplete="current-password" required></label>
+      <button class="btn primary" type="submit">Ingresar</button>
+    </form>
+  </section>
+</div>
+{% endblock %}

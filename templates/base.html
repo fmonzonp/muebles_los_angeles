@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Control de Apartados{% endblock %} · Muebles Los Ángeles</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% if current_user.is_authenticated %}
+  <header class="topbar no-print">
+    <div class="brand">
+      <div class="brand-mark">MLA</div>
+      <div><strong>Muebles Los Ángeles Cartago</strong><small>Control de clientes y apartados en la nube</small></div>
+    </div>
+    <button id="menuBtn" class="menu-btn" aria-label="Abrir menú">☰</button>
+    <nav id="mainNav">
+      <a class="{{ 'active' if endpoint_name == 'dashboard' else '' }}" href="{{ url_for('dashboard') }}">Inicio</a>
+      <a class="{{ 'active' if endpoint_name in ['clients','client_new_page','client_edit_page'] else '' }}" href="{{ url_for('clients') }}">Clientes</a>
+      <a class="{{ 'active' if endpoint_name in ['layaways','layaway_new_page','layaway_edit_page','layaway_detail'] else '' }}" href="{{ url_for('layaways') }}">Apartados</a>
+      <a class="{{ 'active' if endpoint_name in ['reports','reports_csv'] else '' }}" href="{{ url_for('reports') }}">Reportes</a>
+      {% if current_user.is_admin %}
+      <a class="{{ 'active' if endpoint_name in ['users','user_new_page','user_edit_page'] else '' }}" href="{{ url_for('users') }}">Usuarios</a>
+      <a class="{{ 'active' if endpoint_name == 'audit_logs' else '' }}" href="{{ url_for('audit_logs') }}">Auditoría</a>
+      <a class="{{ 'active' if endpoint_name in ['backups','backup_download','backup_import'] else '' }}" href="{{ url_for('backups') }}">Respaldos</a>
+      {% endif %}
+    </nav>
+    <div class="user-menu">
+      <span class="user-label">{{ current_user.full_name }}</span>
+      <a class="btn small" href="{{ url_for('change_password') }}">Clave</a>
+      <form method="post" action="{{ url_for('logout') }}">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        <button class="btn small ghost" type="submit">Salir</button>
+      </form>
+    </div>
+  </header>
+  {% endif %}
+
+  <div class="flash-stack">
+    {% for category, message in flashes %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
+  </div>
+
+  {% block body %}
+  <main class="container">{% block content %}{% endblock %}</main>
+  {% endblock %}
+
+  {% if current_user.is_authenticated %}<footer class="no-print">Muebles Los Ángeles Cartago · Sistema multiusuario</footer>{% endif %}
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

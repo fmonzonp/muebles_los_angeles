@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Respaldos{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Respaldos</h1><p>Descargue una copia o migre la información de la versión portátil.</p></div></div>
+<div class="grid-2">
+<section class="panel"><h2>Descargar respaldo</h2><p>Incluye clientes, apartados y abonos. No incluye contraseñas.</p><a class="btn primary" href="{{ url_for('backup_download') }}">Descargar JSON</a></section>
+<section class="panel warning-panel"><h2>Importar o migrar</h2><p>Admite respaldos de esta versión y de la aplicación portátil. Esta operación reemplaza todos los clientes, apartados y abonos actuales.</p>
+<form method="post" action="{{ url_for('backup_import') }}" enctype="multipart/form-data"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><label>Archivo JSON<input name="backup_file" type="file" accept="application/json,.json" required></label><label style="margin-top:12px">Confirmación<input name="confirmation" placeholder="Escriba REEMPLAZAR" required></label><div class="form-actions"><button class="btn danger" type="submit" data-confirm="Se reemplazarán todos los datos comerciales. ¿Continuar?">Importar y reemplazar</button></div></form>
+</section></div>
+{% endblock %}

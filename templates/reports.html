@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Reportes{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Reportes</h1><p>{{ title }}</p></div><div class="actions"><a class="btn" href="{{ url_for('reports_csv', tipo=report_type) }}">Exportar CSV</a><button class="btn" onclick="window.print()">Imprimir</button></div></div>
+<div class="tabs no-print">{% for value,label in [('pendientes','Pendientes'),('proximos','Próximos 3 días'),('vencidos','Vencidos'),('pagados','Pagados')] %}<a class="{{ 'active' if report_type == value else '' }}" href="{{ url_for('reports', tipo=value) }}">{{ label }}</a>{% endfor %}</div>
+<section class="panel"><div class="report-summary"><span>Registros: <strong>{{ rows|length }}</strong></span><span>Saldo total: <strong>{{ total_balance|crc }}</strong></span></div>
+{% if rows %}<div class="table-wrap"><table><thead><tr><th>Apartado</th><th>Cliente</th><th>Teléfono</th><th>Producto</th><th>Vence</th><th>Estado</th><th>Saldo</th></tr></thead><tbody>{% for item in rows %}<tr><td><a href="{{ url_for('layaway_detail', layaway_id=item.id) }}">{{ item.number }}</a></td><td>{{ item.client.name }}<small>{{ item.client.code }}</small></td><td>{{ item.client.phone or '—' }}</td><td>{{ item.product }}</td><td>{{ item.due_date|date_cr }}</td><td><span class="badge {{ item.status|lower }}">{{ item.status }}</span></td><td>{{ item.balance|crc }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="empty">No hay datos para este reporte.</p>{% endif %}
+</section>
+{% endblock %}

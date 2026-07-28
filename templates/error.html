@@ -1,0 +1,3 @@
+{% extends 'base.html' %}
+{% block title %}Error {{ code }}{% endblock %}
+{% block content %}<section class="panel" style="max-width:700px;margin:60px auto;text-align:center"><h1>Error {{ code }}</h1><p>{{ message }}</p><a class="btn primary" href="{{ url_for('dashboard') if current_user.is_authenticated else url_for('login') }}">Regresar</a></section>{% endblock %}

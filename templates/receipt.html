@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Recibo {{ payment.receipt_number }}{% endblock %}
+{% block content %}
+<div class="page-head no-print"><div><h1>Recibo de abono</h1><p>{{ payment.receipt_number }}</p></div><div class="actions"><button class="btn primary" onclick="window.print()">Imprimir</button><a class="btn" href="{{ url_for('layaway_detail', layaway_id=payment.layaway_id) }}">Volver al apartado</a></div></div>
+<div class="receipt">
+<div class="receipt-head"><div><h1>MUEBLES LOS ÁNGELES CARTAGO</h1><strong>RECIBO DE ABONO</strong></div><strong>{{ payment.receipt_number }}</strong></div>
+<div class="receipt-meta"><span>Fecha: <strong>{{ payment.payment_date|date_cr }}</strong></span><span>Apartado: <strong>{{ payment.layaway.number }}</strong></span></div>
+<dl class="details"><dt>Cliente</dt><dd>{{ payment.layaway.client.name }}</dd><dt>Código</dt><dd>{{ payment.layaway.client.code }}</dd><dt>Cédula</dt><dd>{{ payment.layaway.client.cedula or '—' }}</dd><dt>Teléfono</dt><dd>{{ payment.layaway.client.phone or '—' }}</dd><dt>Producto</dt><dd>{{ payment.layaway.product }}</dd></dl>
+<div class="table-wrap" style="margin-top:22px"><table><thead><tr><th>Saldo anterior</th><th>Abono recibido</th><th>Saldo actual</th></tr></thead><tbody><tr><td>{{ payment.previous_balance|crc }}</td><td><strong>{{ payment.amount|crc }}</strong></td><td>{{ payment.new_balance|crc }}</td></tr></tbody></table></div>
+<p style="margin-top:18px"><strong>Detalle:</strong> {{ payment.notes or 'Abono al apartado' }}</p>
+<p><strong>Recibido por:</strong> {{ payment.created_by.full_name if payment.created_by else 'Registro importado' }}</p>
+<div class="signatures"><span>Firma del cliente</span><span>Firma de quien recibe</span></div>
+<p style="text-align:center;margin-top:28px">Gracias por su compra.</p>
+</div>
+{% endblock %}

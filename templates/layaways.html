@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Apartados{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Apartados</h1><p>Consulte saldos, fechas y estados desde cualquier equipo autorizado.</p></div><a class="btn primary" href="{{ url_for('layaway_new') }}">+ Nuevo apartado</a></div>
+<form class="searchbar" method="get"><input name="q" value="{{ q }}" placeholder="Buscar cliente, código, número o producto"><select name="status"><option value="">Todos los estados</option>{% for s in ['ACTIVO','VENCIDO','PAGADO'] %}<option value="{{ s }}" {{ 'selected' if status == s else '' }}>{{ s }}</option>{% endfor %}</select><button class="btn" type="submit">Filtrar</button><a class="btn ghost" href="{{ url_for('layaways') }}">Limpiar</a></form>
+<section class="panel">
+{% if layaways %}<div class="table-wrap"><table><thead><tr><th>Apartado / Cliente</th><th>Producto</th><th>Inicio</th><th>Vence</th><th>Total</th><th>Saldo</th><th>Estado</th><th></th></tr></thead><tbody>
+{% for item in layaways %}<tr><td><strong>{{ item.number }}</strong><small>{{ item.client.name }} · {{ item.client.code }}</small></td><td>{{ item.product }}</td><td>{{ item.start_date|date_cr }}</td><td>{{ item.due_date|date_cr }}</td><td>{{ item.total_amount|crc }}</td><td>{{ item.balance|crc }}</td><td><span class="badge {{ item.status|lower }}">{{ item.status }}</span></td><td class="row-actions"><a class="btn small primary" href="{{ url_for('layaway_detail', layaway_id=item.id) }}">Abrir</a><a class="btn small" href="{{ url_for('layaway_edit', layaway_id=item.id) }}">Modificar</a></td></tr>{% endfor %}
+</tbody></table></div>{% else %}<p class="empty">No se encontraron apartados.</p>{% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Modificar apartado' if layaway else 'Nuevo apartado' }}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{{ 'Modificar apartado' if layaway else 'Nuevo apartado' }}</h1><p>La fecha límite se calcula a 15 días por cada quincena.</p></div></div>
+<section class="panel"><form method="post">
+<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+<div class="form-grid">
+<label class="full">Cliente *<select name="client_id" required>{% for c in clients %}<option value="{{ c.id }}" {{ 'selected' if selected_client == c.id else '' }}>{{ c.code }} · {{ c.name }}</option>{% endfor %}</select></label>
+<label class="full">Producto o descripción *<input name="product" value="{{ layaway.product if layaway else '' }}" required></label>
+<label>Fecha del apartado *<input id="start_date" name="start_date" type="date" value="{{ layaway.start_date.isoformat() if layaway else default_date }}" required></label>
+<label>Número de quincenas *<input id="installments" name="installments" type="number" min="1" max="120" value="{{ layaway.installments if layaway else '4' }}" required></label>
+<label>Fecha límite calculada<input id="due_preview" type="date" readonly></label>
+<label>Monto total (₡) *<input name="total_amount" type="number" min="0.01" step="0.01" value="{{ layaway.total_amount if layaway else '' }}" required></label>
+{% if layaway %}<label>Pago inicial registrado<input value="{{ layaway.initial_payment }}" readonly></label>{% else %}<label>Pago inicial (₡)<input name="initial_payment" type="number" min="0" step="0.01" value="{{ '0' }}"></label>{% endif %}
+<label class="full">Observaciones<textarea name="notes" rows="3">{{ layaway.notes if layaway else '' }}</textarea></label>
+</div>
+<div class="form-actions"><a class="btn ghost" href="{{ url_for('layaway_detail', layaway_id=layaway.id) if layaway else url_for('layaways') }}">Cancelar</a><button class="btn primary" type="submit">Guardar apartado</button></div>
+</form></section>
+{% endblock %}

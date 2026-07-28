@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}Usuarios{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Usuarios</h1><p>Controle quién puede ingresar al sistema.</p></div><a class="btn primary" href="{{ url_for('user_new') }}">+ Nuevo usuario</a></div>
+<section class="panel">{% if users %}<div class="table-wrap"><table><thead><tr><th>Nombre</th><th>Usuario</th><th>Rol</th><th>Estado</th><th>Último ingreso</th><th></th></tr></thead><tbody>{% for u in users %}<tr><td>{{ u.full_name }}</td><td>{{ u.username }}</td><td><span class="badge {{ u.role|lower }}">{{ u.role }}</span></td><td>{{ 'Activo' if u.active else 'Desactivado' }}</td><td>{{ u.last_login_at|datetime_cr if u.last_login_at else 'Nunca' }}</td><td><a class="btn small" href="{{ url_for('user_edit', user_id=u.id) }}">Editar</a></td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="empty">No hay usuarios.</p>{% endif %}</section>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}{{ layaway.number }}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{{ layaway.number }}</h1><p>{{ layaway.product }}</p></div><div class="actions"><a class="btn" href="{{ url_for('layaway_edit', layaway_id=layaway.id) }}">Modificar</a><a class="btn ghost" href="{{ url_for('layaways') }}">Volver</a></div></div>
+<div class="grid-2">
+<section class="panel">
+<div class="panel-head"><h2>Detalle del apartado</h2><span class="badge {{ layaway.status|lower }}">{{ layaway.status }}</span></div>
+<dl class="details">
+<dt>Cliente</dt><dd>{{ layaway.client.name }}</dd><dt>Código</dt><dd>{{ layaway.client.code }}</dd><dt>Cédula</dt><dd>{{ layaway.client.cedula or '—' }}</dd><dt>Teléfono</dt><dd>{{ layaway.client.phone or '—' }}</dd><dt>Producto</dt><dd>{{ layaway.product }}</dd><dt>Fecha de apartado</dt><dd>{{ layaway.start_date|date_cr }}</dd><dt>Fecha límite</dt><dd>{{ layaway.due_date|date_cr }}</dd><dt>Quincenas</dt><dd>{{ layaway.installments }}</dd><dt>Monto total</dt><dd>{{ layaway.total_amount|crc }}</dd><dt>Pago inicial</dt><dd>{{ layaway.initial_payment|crc }}</dd><dt>Saldo actual</dt><dd class="balance">{{ layaway.balance|crc }}</dd><dt>Observaciones</dt><dd>{{ layaway.notes or '—' }}</dd><dt>Última modificación</dt><dd>{{ layaway.updated_by.full_name if layaway.updated_by else 'Importado' }}</dd>
+</dl>
+</section>
+<section class="panel">
+<h2>Registrar abono</h2>
+{% if layaway.balance > 0 %}
+<form method="post" action="{{ url_for('payment_add', layaway_id=layaway.id) }}">
+<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+<div class="form-grid">
+<label>Fecha *<input name="payment_date" type="date" value="{{ today_iso }}" required></label>
+<label>Monto (₡) *<input name="amount" type="number" min="0.01" max="{{ layaway.balance }}" step="0.01" required></label>
+<label class="full">Detalle<textarea name="notes" rows="2" placeholder="Ej. Abono quincenal"></textarea></label>
+</div><div class="form-actions"><button class="btn primary" type="submit">Guardar e imprimir recibo</button></div>
+</form>
+{% else %}<p class="empty">Este apartado está pagado en su totalidad.</p>{% endif %}
+</section>
+</div>
+<section class="panel"><div class="panel-head"><h2>Historial de abonos</h2></div>
+{% if layaway.payments %}<div class="table-wrap"><table><thead><tr><th>Recibo</th><th>Fecha</th><th>Detalle</th><th>Saldo anterior</th><th>Abono</th><th>Saldo actual</th><th>Usuario</th></tr></thead><tbody>
+{% for p in layaway.payments %}<tr><td><a href="{{ url_for('receipt', payment_id=p.id) }}">{{ p.receipt_number }}</a></td><td>{{ p.payment_date|date_cr }}</td><td>{{ p.notes or 'Abono al apartado' }}</td><td>{{ p.previous_balance|crc }}</td><td>{{ p.amount|crc }}</td><td>{{ p.new_balance|crc }}</td><td>{{ p.created_by.full_name if p.created_by else 'Importado' }}</td></tr>{% endfor %}
+</tbody></table></div>{% else %}<p class="empty">Todavía no hay abonos registrados.</p>{% endif %}
+</section>
+{% endblock %}

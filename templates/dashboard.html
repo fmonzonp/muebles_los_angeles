@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Inicio{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Panel principal</h1><p>Información centralizada y actualizada para todos los equipos.</p></div>
+  <div class="actions"><a class="btn" href="{{ url_for('client_new') }}">+ Cliente</a><a class="btn primary" href="{{ url_for('layaway_new') }}">+ Apartado</a></div>
+</div>
+<div class="stats">
+  <article class="stat"><span>Clientes</span><strong>{{ stats.clients }}</strong></article>
+  <article class="stat"><span>Apartados activos</span><strong>{{ stats.active }}</strong></article>
+  <article class="stat danger"><span>Vencidos</span><strong>{{ stats.overdue }}</strong></article>
+  <article class="stat money"><span>Saldo pendiente</span><strong>{{ stats.pending_total|crc }}</strong></article>
+</div>
+<div class="grid-2">
+  <section class="panel">
+    <div class="panel-head"><h2>Próximos a vencer</h2><a href="{{ url_for('reports', tipo='proximos') }}">Ver reporte</a></div>
+    {% set items = upcoming %}{% include '_compact_layaways.html' %}
+  </section>
+  <section class="panel">
+    <div class="panel-head"><h2>Vencidos</h2><a href="{{ url_for('reports', tipo='vencidos') }}">Ver reporte</a></div>
+    {% set items = overdue %}{% include '_compact_layaways.html' %}
+  </section>
+</div>
+<section class="panel">
+  <div class="panel-head"><h2>Abonos recientes</h2></div>
+  {% if recent_payments %}
+  <div class="table-wrap"><table><thead><tr><th>Recibo</th><th>Cliente</th><th>Fecha</th><th>Abono</th><th>Registrado por</th></tr></thead><tbody>
+  {% for p in recent_payments %}<tr><td><a href="{{ url_for('receipt', payment_id=p.id) }}">{{ p.receipt_number }}</a></td><td>{{ p.layaway.client.name }}<small>{{ p.layaway.number }}</small></td><td>{{ p.payment_date|date_cr }}</td><td>{{ p.amount|crc }}</td><td>{{ p.created_by.full_name if p.created_by else 'Importado' }}</td></tr>{% endfor %}
+  </tbody></table></div>
+  {% else %}<p class="empty">Todavía no hay abonos registrados.</p>{% endif %}
+</section>
+{% endblock %}

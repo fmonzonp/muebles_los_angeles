@@ -1,0 +1,5 @@
+{% if items %}
+<div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Producto</th><th>Vence</th><th>Saldo</th></tr></thead><tbody>
+{% for item in items %}<tr><td><a href="{{ url_for('layaway_detail', layaway_id=item.id) }}">{{ item.client.name }}</a><small>{{ item.client.code }}</small></td><td>{{ item.product }}</td><td>{{ item.due_date|date_cr }}</td><td>{{ item.balance|crc }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% else %}<p class="empty">No hay registros.</p>{% endif %}

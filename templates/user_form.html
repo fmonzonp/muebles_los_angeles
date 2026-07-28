@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar usuario' if user else 'Nuevo usuario' }}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{{ 'Editar usuario' if user else 'Nuevo usuario' }}</h1><p>Los administradores gestionan usuarios y respaldos; los vendedores operan clientes, apartados y abonos.</p></div></div>
+<section class="panel"><form method="post"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><div class="form-grid">
+<label>Nombre completo *<input name="full_name" value="{{ user.full_name if user else '' }}" required></label>
+<label>Nombre de usuario *<input name="username" value="{{ user.username if user else '' }}" required></label>
+<label>Rol *<select name="role"><option value="VENDEDOR" {{ 'selected' if (user and user.role == 'VENDEDOR') or (not user and 'VENDEDOR' == 'VENDEDOR') else '' }}>VENDEDOR</option><option value="ADMIN" {{ 'selected' if (user and user.role == 'ADMIN') or (not user and '' == 'ADMIN') else '' }}>ADMIN</option></select></label>
+<label>{{ 'Nueva contraseña (dejar vacía para conservar)' if user else 'Contraseña *' }}<input name="password" type="password" minlength="8" {{ '' if user else 'required' }}></label>
+{% if user %}<label class="full"><span><input style="width:auto" name="active" type="checkbox" {{ 'checked' if user.active else '' }}> Usuario activo</span></label>{% endif %}
+</div><div class="form-actions"><a class="btn ghost" href="{{ url_for('users') }}">Cancelar</a><button class="btn primary" type="submit">Guardar usuario</button></div></form></section>
+{% endblock %}

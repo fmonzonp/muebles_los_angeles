@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}Auditoría{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Auditoría</h1><p>Últimas 500 acciones realizadas en el sistema.</p></div></div>
+<section class="panel">{% if logs %}<div class="table-wrap"><table><thead><tr><th>Fecha y hora</th><th>Usuario</th><th>Acción</th><th>Tipo</th><th>Registro</th><th>Detalle</th></tr></thead><tbody>{% for log in logs %}<tr><td>{{ log.created_at|datetime_cr }}</td><td>{{ log.user.full_name if log.user else 'Sistema' }}</td><td>{{ log.action }}</td><td>{{ log.entity_type }}</td><td>{{ log.entity_id or '—' }}</td><td>{{ log.detail or '—' }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="empty">No hay acciones registradas.</p>{% endif %}</section>
+{% endblock %}
